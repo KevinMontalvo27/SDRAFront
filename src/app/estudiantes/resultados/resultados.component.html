@@ -1,0 +1,167 @@
+<div class="main">
+
+    <div class="statistics">
+        <div class="title">
+            <p class="text-center"> Survey result </p>
+        </div>
+        <div class="tap">
+          <button (click)="cambiasGrafica($event)"> <p id="Grafica" class="active" > Graph </p> </button>
+          <button (click)="cambiasTabla($event)"> <p id="Tabla" > Table </p> </button>
+      </div>
+
+      <div class="info_grafic" style="position: relative; height:40vh; width:80vw">
+          <!-- <canvas id="MyChart"  class=""> {{ chart }} </canvas> -->
+      </div>
+      <div class="info_table activePreview">
+          <table class="table table-hover">
+              <thead class="table-dark">
+                <tr>
+  
+                  <th scope="col"></th>
+                  <th scope="col">11</th>
+                  <th scope="col">9</th>
+                  <th scope="col">7</th>
+                  <th scope="col">5</th>
+                  <th scope="col">3</th>
+                  <th scope="col">1</th>
+                  <th scope="col">1</th>
+                  <th scope="col">3</th>
+                  <th scope="col">5</th>
+                  <th scope="col">7</th>
+                  <th scope="col">9</th>
+                  <th scope="col">11</th>
+                  <th scope="col"></th>
+  
+                </tr>
+              </thead>
+              <tbody class="">
+                <tr>
+  
+                  <th scope="row"> Active </th>
+                  <td id="a11"></td>
+                  <td id="a9"></td>
+                  <td id="a7"></td>
+                  <td id="a5"></td>
+                  <td id="a3"></td>
+                  <td id="a1"></td>
+                  <td id="r1"></td>
+                  <td id="r3"></td>
+                  <td id="r5"></td>
+                  <td id="r7"></td>
+                  <td id="r9"></td>
+                  <td id="r11"></td>
+                  <th scope="row"> Thoughtful </th>
+  
+                </tr>
+                <tr>
+  
+                  <th scope="row"> Sensory </th>
+                  <td id="s11"></td>
+                  <td id="s9"></td>
+                  <td id="s7"></td>
+                  <td id="s5"></td>
+                  <td id="s3"></td>
+                  <td id="s1"></td>
+                  <td id="i1"></td>
+                  <td id="i3"></td>
+                  <td id="i5"></td>
+                  <td id="i7"></td>
+                  <td id="i9"></td>
+                  <td id="i11"></td>
+                  <th scope="row"> Intuitive </th>
+  
+                </tr>
+                <tr>
+  
+                  <th scope="row"> Visual </th>
+                  <td id="v11"></td>
+                  <td id="v9"></td>
+                  <td id="v7"></td>
+                  <td id="v5"></td>
+                  <td id="v3"></td>
+                  <td id="v1"></td>
+                  <td id="ve1"></td>
+                  <td id="ve3"></td>
+                  <td id="ve5"></td>
+                  <td id="ve7"></td>
+                  <td id="ve9"></td>
+                  <td id="ve11"></td>
+                  <th scope="row"> Verbal </th>
+  
+                </tr>
+                <tr>
+  
+                  <th scope="row"> Sequential </th>
+                  <td id="se11"></td>
+                  <td id="se9"></td>
+                  <td id="se7"></td>
+                  <td id="se5"></td>
+                  <td id="se3"></td>
+                  <td id="se1"></td>
+                  <td id="g1"></td>
+                  <td id="g3"></td>
+                  <td id="g5"></td>
+                  <td id="g7"></td>
+                  <td id="g9"></td>
+                  <td id="g11"></td>
+                  <th scope="row"> Global </th>
+  
+                </tr>
+              </tbody>
+            </table>
+      </div>
+        
+    </div>
+        
+    <div class="profile table_flex">
+      <h2 class="text text-center"> Profile sheet </h2>
+
+      <div class="profile_info">
+        <div class="profile_text">
+          <h5> How do you acquire the information? </h5>
+          <h3 id="Estilo1"></h3>
+        </div>
+
+        <p id="Info1"></p>
+
+      </div>
+      <div class="profile_info">
+        <div class="profile_text">
+          <h5> How do you perceive the information? </h5>
+          <h3 id="Estilo2"></h3>
+        </div>
+
+        <p id="Info2"></p>
+
+      </div>
+      <div class="profile_info">
+
+        <div class="profile_text">
+          <h5> By what means do you prefer to receive information? </h5>
+          <h3 id="Estilo3"></h3>
+        </div>
+
+        <p id="Info3"></p>
+
+      </div>
+      <div class="profile_info">
+
+        <div class="profile_text">
+          <h5> How is the content provided to you? </h5>
+          <h3 id="Estilo4"></h3>
+        </div>
+
+        <p id="Info4"></p>
+
+      </div>
+
+    </div>
+    <!--
+    <div class="encuestas">
+      <a href="https://forms.gle/fqq2TLLfc4jYw7i9A" class="b_encuesta">Evaluar Test SUMI</a>
+      <a href="https://forms.gle/3NWPg9UCjq3XrsMt7" class="b_encuesta">Evaluar Test USABILIDAD</a>
+    </div>-->
+</div>
+
+
+
