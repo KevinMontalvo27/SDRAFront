@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
   navigateTo(userType: string): void {
     if (userType === 'profesor') {
         // Navegar a la página de profesores
-        window.location.href = 'https://v2.powerhashing.io/';
+        this.route.navigate(['/teacher']);
     } else if (userType === 'estudiante') {
         // Permanecer en la página actual para estudiantes
     }
@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
         }
       ).subscribe( (data) => {
         localStorage.setItem('info_alumno', JSON.stringify(data));
-        this.route.navigate(['/Inicio']);
+        this.route.navigate(['/cursos']);
 
       },
       (error) => {

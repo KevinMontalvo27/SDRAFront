@@ -1,0 +1,38 @@
+<div class="viewer-container">
+  <div class="viewer-content">
+    <h3>{{ data.title }}</h3>
+    <p>{{ data.description }}</p>
+    <ng-container [ngSwitch]="displayType">
+      <video *ngSwitchCase="'video'" [src]="safeUrl" controls></video>
+      <img
+        *ngSwitchCase="'image'"
+        [src]="safeUrl"
+        alt="Recurso de aprendizaje"
+      />
+      <iframe
+        *ngSwitchCase="'document'"
+        [src]="safeUrl"
+        width="100%"
+        height="75%"
+      ></iframe>
+      <iframe
+        *ngSwitchCase="'external'"
+        [src]="safeUrl"
+        width="100%"
+        height="75%"
+        sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-presentation"
+      ></iframe>
+    </ng-container>
+    <div class="viewer-actions">
+      <button
+        mat-stroked-button
+        class="btn-view"
+        *ngIf="data.type === 'document' || data.type === 'image' || data.type === 'video'"
+        (click)="downloadFile(data.url, data.title)"
+      >
+        Descargar recurso
+      </button>
+      <button class="btn-view" style="background-color: red;" (click)="close()">Cerrar</button>
+    </div>
+  </div>
+</div>

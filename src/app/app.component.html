@@ -1,11 +1,14 @@
-<div class="header" >
+<div class="header">
+  <div class="logo" (click)="navigateInicio()">
+    <img src="../assets/unnamed.png" />
+    <p>
+      Recommendation System for Teaching Strategies according to Learning Styles
+    </p>
+  </div>
 
-    <div class="logo" (click)="navigateInicio()">
-        <img src="../assets/unnamed.png">
-        <p>  Recommendation System for Teaching Strategies according to Learning Styles </p>
-    </div>
-
-    <button class="logout" (click)="logout()" *ngIf="loggedin()"> <i class="fa-solid fa-right-from-bracket "></i> </button>
+  <button class="logout" (click)="logout()" *ngIf="loggedin()">
+    <i class="fa-solid fa-right-from-bracket"></i>
+  </button>
 </div>
 
 <router-outlet></router-outlet>

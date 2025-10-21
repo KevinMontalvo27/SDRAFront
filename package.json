@@ -16,6 +16,7 @@
     "@angular/compiler": "^17.3.12",
     "@angular/core": "^17.3.12",
     "@angular/forms": "^17.3.12",
+    "@angular/material": "^16.2.14",
     "@angular/platform-browser": "^17.3.12",
     "@angular/platform-browser-dynamic": "^17.3.12",
     "@angular/router": "^17.3.12",
@@ -46,5 +47,6 @@
     "karma-jasmine-html-reporter": "~2.0.0",
     "karma-opera-launcher": "^1.0.0",
     "typescript": "~5.4.5"
-  }
+  },
+  "packageManager": "pnpm@9.15.2+sha512.93e57b0126f0df74ce6bff29680394c0ba54ec47246b9cf321f0121d8d9bb03f750a705f24edc3c1180853afd7c2c3b94196d0a3d53d3e069d9e2793ef11f321"
 }

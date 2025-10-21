@@ -222,4 +222,8 @@ export class InicioComponent implements OnInit, AfterViewInit {
     table?.classList.remove('activePreview');
   }
 
+  navigateCursos() {
+    this.route.navigate(['/cursos']);
+  }
+
 }
