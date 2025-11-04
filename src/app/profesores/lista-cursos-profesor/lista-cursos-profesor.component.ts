@@ -11,13 +11,13 @@ import { CursoService } from '../../services/curso.service';
     <section class="teacher-courses">
       <h2>Mis cursos (Profesor)</h2>
       <div class="grid">
-        <div *ngFor="let c of courses" class="card">
+        <div *ngFor="let c of courses | async" class="card">
           <div class="card-bg"></div>
           <div class="card-body">
-            <a [routerLink]="['/teacher/course', c.id]" class="title">{{
-              c.name
+            <a [routerLink]="['/profesor/curso', c.id]" class="title">{{
+              c.nombre
             }}</a>
-            <p>{{ c.semester }}</p>
+            <p>Grupo: {{ c.grupo }}</p>
           </div>
         </div>
       </div>
@@ -69,6 +69,14 @@ import { CursoService } from '../../services/curso.service';
   ],
 })
 export class TeacherCourseListComponent {
-  courses = this.courseSrv.getCourses();
-  constructor(private courseSrv: CursoService) {}
+  grupo = 0;
+  courses: any;
+  
+  constructor(private courseSrv: CursoService) {
+    const info = localStorage.getItem('info_profesor');
+    if (info) {
+      this.grupo = JSON.parse(info).grupo;
+    }
+    this.courses = this.courseSrv.getCourses(this.grupo);
+  }
 }

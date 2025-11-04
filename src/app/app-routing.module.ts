@@ -22,24 +22,24 @@ const appRoutes: Routes = [
   { path: 'Resultado', component: ResultadosComponent },
   { path: 'cursos', component: CourseListComponent },
   {
-    path: 'course/:courseId',
+    path: 'curso/:cursoId',
     component: CourseLayoutComponent,
     children: [
       {
-        path: 'unit/:id',
+        path: 'unidad/:id',
         component: SubjectContentComponent,
       },
-      { path: 'unit/:id/topic/:topicId', component: TemaComponent },
+      { path: 'unidad/:id/tema/:temaId', component: TemaComponent },
     ],
   },
-  { path: 'teacher', component: TeacherCourseListComponent },
+  { path: 'profesor', component: TeacherCourseListComponent },
   {
-    path: 'teacher/course/:courseId',
+    path: 'profesor/curso/:cursoId',
     component: TeacherLayoutComponent,
     children: [
-      { path: 'add-unit', component: UnitFormComponent },
-      { path: 'topic/:id', component: TopicFormComponent },
-      { path: 'resource/:id', component: ResourceFormComponent },
+      { path: 'agregar-unidad', component: UnitFormComponent },
+      { path: 'tema/:id', component: TopicFormComponent },
+      { path: 'recurso/:id', component: ResourceFormComponent },
     ],
   },
 ];

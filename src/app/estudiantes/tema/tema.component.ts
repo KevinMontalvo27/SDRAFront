@@ -4,25 +4,26 @@ import { RouterModule } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { OnInit } from '@angular/core';
 import { RecommendationService } from 'src/app/services/recomendacion.service';
-import { Topic } from '../recomendacion/tipos.model';
+import { Resource, Topic } from '../recomendacion/tipos.model';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { OaViewerComponent } from '../oa-viewer/oa-viewer.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-tema',
   standalone: true,
   imports: [CommonModule, RouterModule, MatDialogModule],
   template: `
-    <div class="topic" *ngIf="topic">
-      <h2 class="topic-title">{{ topic.name }}</h2>
-      <div class="topic-desc" [innerText]="topic.description"></div>
+    <div class="topic" *ngIf="topic$ | async as topic">
+      <h2 class="topic-title">{{ topic.nombre }}</h2>
+      <div class="topic-desc" [innerText]="topic.descripcion"></div>
 
-      <h4 class="section-heading">Objetos de aprendizaje</h4>
-      <div class="oa-list">
-        <div *ngFor="let oa of topic.learningObjects" class="oa-card">
+      <h4 class="section-heading">Recursos asignados según tu perfil de aprendizaje</h4>
+      <div *ngIf="recomendacion$ | async as recomendacion" class="oa-list">
+        <div *ngFor="let oa of recomendacion.objetos" class="oa-card">
           <div class="oa-meta">
-            <div class="oa-title">{{ oa.title }}</div>
-            <div class="oa-desc">{{ oa.description }}</div>
+            <div class="oa-title">{{ oa.objeto.nombre }}</div>
+            <div class="oa-desc">{{ oa.objeto.descripcion }}</div>
           </div>
           <div class="oa-actions">
             <button mat-flat-button class="btn-view" (click)="openResource(oa)">
@@ -97,12 +98,14 @@ import { OaViewerComponent } from '../oa-viewer/oa-viewer.component';
   ],
 })
 export class TemaComponent implements OnInit {
-  @Input() topic: Topic | undefined;
   constructor(
     private route: ActivatedRoute,
     private recSrv: RecommendationService,
-    private dialog: MatDialog,
+    private dialog: MatDialog
   ) {}
+
+  topic$!: Observable<Topic | undefined>;
+  recomendacion$!: Observable<any>;
 
   openResource(oa: any): void {
     this.dialog.open(OaViewerComponent, {
@@ -115,8 +118,17 @@ export class TemaComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const unitId = params.get('id') || '';
-      const topicId = params.get('topicId') || '';
-      this.topic = this.recSrv.getTopicById(unitId, topicId);
+      const topicId = params.get('temaId') || '';
+      const info_alumno = localStorage.getItem('info_alumno');
+      if (info_alumno) {
+        const nro_cuenta = JSON.parse(info_alumno).nro_cuenta;
+        console.log('Unit ID:', unitId, 'Topic ID:', topicId);
+        this.topic$ = this.recSrv.getTopicById(unitId, topicId);
+        this.recomendacion$ = this.recSrv.getRecomendacion(
+          Number(topicId),
+          Number(nro_cuenta)
+        );
+      }
     });
   }
 }

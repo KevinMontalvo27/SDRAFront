@@ -10,7 +10,7 @@
   <select [(ngModel)]="selectedUnitId">
     <option [value]="null">Seleccione unidad</option>
     <option *ngFor="let unit of course?.units" [value]="unit.id">
-      {{ unit.title }}
+      {{ unit.nombre }}
     </option>
   </select>
   <input [(ngModel)]="topicName" placeholder="Nombre del tema" />

@@ -16,14 +16,14 @@ export class OaViewerComponent implements OnInit {
   displayType: 'video' | 'image' | 'document' | 'external' = 'external';
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: Resource,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<OaViewerComponent>,
     private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
-    this.displayType = this.detectType(this.data.url, this.data.type);
-    this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.getEmbedUrl(this.data.url));
+    this.displayType = this.detectType(this.data.objeto.contenido, 'external');
+    this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.getEmbedUrl(this.data.objeto.contenido));
   }
 
   private detectType(url: string, providedType?: string): 'video' | 'image' | 'document' | 'external' {

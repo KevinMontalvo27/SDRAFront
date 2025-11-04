@@ -1,36 +1,177 @@
-<div class="main">
-
-    <div class="info">
+<div
+  class="flex min-h-screen items-center justify-center bg-[url('https://cdn.flyonui.com/fy-assets/blocks/marketing-ui/auth/auth-background-2.png')] bg-cover bg-center bg-no-repeat px-4 py-10 overflow-x-hidden"
+>
+  <div class="relative flex items-center justify-center">
+    <!-- SVG decorativo -->
+    <div class="absolute inset-0 flex justify-center items-center opacity-40">
+      <svg
+        width="600"
+        height="680"
+        viewBox="0 0 612 697"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="max-w-[600px]"
+      >
+        <path
+          d="M360.405 111.996C393.955 67.9448 456.863 59.4318 500.914 92.9818V92.9818C544.965 126.532 553.478 189.44 519.928 233.491L250.545 587.191C216.995 631.243 154.087 639.756 110.036 606.206V606.206C65.9845 572.656 57.4716 509.747 91.0216 465.696L360.405 111.996Z"
+          fill="url(#grad)"
+          fill-opacity="0.1"
+        />
+        <defs>
+          <linearGradient
+            id="grad"
+            x1="500"
+            y1="100"
+            x2="110"
+            y2="600"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#3B82F6" />
+            <stop offset="1" stop-color="#3B82F6" stop-opacity="0.2" />
+          </linearGradient>
+        </defs>
+      </svg>
     </div>
 
-    <form [formGroup]="login_form" (keydown)="onKeydown($event)">
+    <!-- Tarjeta de login -->
+    <div
+      class="relative z-10 w-full max-w-md space-y-6 rounded-xl bg-white/90 p-8 shadow-xl backdrop-blur"
+    >
+      <!-- Título -->
+      <div>
+        <h3 class="mb-1.5 text-2xl font-semibold text-gray-800">
+          Sign in
+        </h3>
+      </div>
 
-        <div class="login">
-
-            <h2> Log in </h2>
-
-            <div class="icons">
-                <button class="btn" [ngClass]="{selected: activeClass}" (click)="navigateTo('estudiante')">
-                    <i class="fa-solid fa-user fa-lg"></i>
-                    <p>Student</p>
-                </button>
-                <button class="btn" [ngClass]="{selected: !activeClass}" (click)="navigateTo('profesor')">
-                    <i class="fa-solid fa-chalkboard-user fa-lg"></i>
-                    <p>Teacher</p>
-                </button>
-            </div>
-
-            <div class="inputs">
-                <input placeholder="Account number" type="text" name="" id="user" formControlName = "nro_cuenta">
-            </div>
-            
-            <div class="inputs pass">
-                <input placeholder="Password" type="password" name="" id="pass" formControlName = "password" >
-            </div>
-
-            <button type="button" class="login_btn" (click)="sendLogin()">
-                Log in
-            </button>
+      <!-- Formulario -->
+      <!-- <form class="space-y-4">
+        <div>
+          <label
+            for="userEmail"
+            class="mb-1 block text-sm font-medium text-gray-700"
+            >Email address*</label
+          >
+          <input
+            type="email"
+            id="userEmail"
+            placeholder="Enter your email address"
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-800 focus:border-blue-500 focus:ring focus:ring-blue-200"
+            required
+          />
         </div>
-    </form>
+
+        <div>
+          <label
+            for="userPassword"
+            class="mb-1 block text-sm font-medium text-gray-700"
+            >Password*</label
+          >
+          <div class="relative">
+            <input
+              id="userPassword"
+              type="password"
+              placeholder="••••••••••"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-800 focus:border-blue-500 focus:ring focus:ring-blue-200"
+              required
+            />
+            <button
+              type="button"
+              class="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
+              aria-label="toggle password"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M2.25 12s3.75-7.5 9.75-7.5S21.75 12 21.75 12s-3.75 7.5-9.75 7.5S2.25 12 2.25 12z"
+                />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button
+          class="w-full rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition"
+        >
+          Sign in to FlyonUI
+        </button>
+      </form> -->
+
+      <form [formGroup]="login_form" (keydown)="onKeydown($event)">
+        <div class="login">
+          <div class="icons">
+            <button
+              class="btn"
+              [ngClass]="{ selected: activeClass }"
+              (click)="navigateTo('estudiante')"
+            >
+              <i class="fa-solid fa-user fa-lg"></i>
+              <p>Student</p>
+            </button>
+            <button
+              class="btn"
+              [ngClass]="{ selected: !activeClass }"
+              (click)="navigateTo('profesor')"
+            >
+              <i class="fa-solid fa-chalkboard-user fa-lg"></i>
+              <p>Teacher</p>
+            </button>
+          </div>
+
+          <div class="inputs">
+            <label
+              for="user"
+              class="mb-1 block text-sm font-medium text-gray-700"
+              >Account Number*</label
+            >
+            <input
+              placeholder="12345678"
+              type="text"
+              name=""
+              id="user"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-800 focus:border-blue-500 focus:ring focus:ring-blue-200"
+              formControlName="nro_cuenta"
+            />
+          </div>
+
+          <div class="inputs pass">
+            <label
+              for="pass"
+              class="mb-1 block text-sm font-medium text-gray-700"
+              >Password*</label
+            >
+            <input
+              placeholder="••••••••••"
+              type="password"
+              name=""
+              id="pass"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-800 focus:border-blue-500 focus:ring focus:ring-blue-200"
+              formControlName="password"
+            />
+          </div>
+          <!-- Divider -->
+          <div class="flex m-4 items-center gap-3">
+            <hr class="flex-grow border-gray-500" />
+            <hr class="flex-grow border-gray-500" />
+          </div>
+          <button
+            type="button"
+            class="w-full rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition"
+            (click)="sendLogin()"
+          >
+            Log in
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

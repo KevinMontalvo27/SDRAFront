@@ -11,9 +11,19 @@ import { RecommendationService } from './services/recomendacion.service';
 export class AppComponent {
   title = 'P_TomaDeciciones';
   loggedUser!: string;
-  units = this.recSrv.getUnits();
+  nombre_usuario$!: string;
+  grupo$!: string;
 
   constructor(private route: Router, private recSrv: RecommendationService) {}
+
+  ngOnInit() {
+    const info_alumno = localStorage.getItem('info_alumno');
+    if (info_alumno) {
+      const { nombre} = JSON.parse(info_alumno);
+      this.nombre_usuario$ = nombre;
+      this.grupo$ = JSON.parse(info_alumno).grupo;
+    }
+  }
 
   navigateInicio() {
     this.route.navigate(['/Inicio']);

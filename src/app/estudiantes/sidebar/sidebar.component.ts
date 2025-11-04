@@ -14,15 +14,15 @@ import { Unit } from '../recomendacion/tipos.model';
         <div *ngFor="let unit of units" class="unit">
           <button class="unit-header" (click)="toggleUnit()">
             <span class="chev" [class.open]="open">▾</span>
-            <a [routerLink]="['unit', unit.id]">{{ unit.title }}</a>
+            <a [routerLink]="['unidad', unit.id]">{{ unit.nombre }}</a>
           </button>
 
           <ul *ngIf="open" class="topic-list">
-            <li *ngFor="let topic of unit.topics" class="topic-item">
+            <li *ngFor="let topic of unit.temas" class="topic-item">
               <a
-                [routerLink]="['unit', unit.id, 'topic', topic.id]"
+                [routerLink]="['unidad', unit.id, 'tema', topic.id]"
                 class="topic-link"
-                >{{ topic.name }}</a
+                >{{ topic.nombre }}</a
               >
             </li>
           </ul>
@@ -168,7 +168,7 @@ import { Unit } from '../recomendacion/tipos.model';
   ],
 })
 export class SidebarComponent {
-  @Input() units: Unit[] = [];
+  @Input() units: Unit[] | null = [];
   @Input() courseId?: string;
   open = true;
 

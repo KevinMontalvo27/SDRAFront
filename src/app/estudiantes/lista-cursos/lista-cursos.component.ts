@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CursoService } from '../../services/curso.service';
+import { Course } from '../recomendacion/tipos.model';
 
 @Component({
   selector: 'app-course-list',
@@ -11,16 +12,15 @@ import { CursoService } from '../../services/curso.service';
     <section class="course-list">
       <h2>Mis cursos</h2>
       <div class="grid">
-        <div *ngFor="let c of courses" class="card">
+        <div *ngFor="let c of courses | async" class="card">
           <div class="card-bg"></div>
           <div class="card-body">
             <a
-              [routerLink]="['/course', c.id, 'unit', 'unit1']"
+              [routerLink]="['/curso', c.id, 'unidad', '1']"
               class="title"
-              >{{ c.name }}</a
+              >{{ c.nombre }}</a
             >
-            <p>{{ c.semester }}</p>
-            <p *ngIf="c.progress !== undefined">{{ c.progress }}% completado</p>
+            <p>Grupo: {{ c.grupo }}</p>
           </div>
         </div>
       </div>
@@ -67,6 +67,14 @@ import { CursoService } from '../../services/curso.service';
   ],
 })
 export class CourseListComponent {
-  courses = this.courseSrv.getCourses();
-  constructor(private courseSrv: CursoService) {}
+  grupo = 0;
+  courses: any;
+
+  constructor(private courseSrv: CursoService) {
+    const info = localStorage.getItem('info_alumno');
+    if (info) {
+      this.grupo = JSON.parse(info).grupo;
+    }
+    this.courses = this.courseSrv.getCourses(this.grupo);
+  }
 }

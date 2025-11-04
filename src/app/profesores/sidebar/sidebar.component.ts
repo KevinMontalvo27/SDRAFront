@@ -7,10 +7,8 @@ import { CursoService } from '../../services/curso.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css']
+  styleUrls: ['./sidebar.component.css'],
 })
 export class TeacherSidebarComponent {
-  course$ = this.courseService.course$;
-
   constructor(private courseService: CursoService) {}
 }

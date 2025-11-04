@@ -1,7 +1,7 @@
 <div class="viewer-container">
   <div class="viewer-content">
-    <h3>{{ data.title }}</h3>
-    <p>{{ data.description }}</p>
+    <h3>{{ data.objeto.nombre }}</h3>
+    <p>{{ data.objeto.descripcion }}</p>
     <ng-container [ngSwitch]="displayType">
       <video *ngSwitchCase="'video'" [src]="safeUrl" controls></video>
       <img
