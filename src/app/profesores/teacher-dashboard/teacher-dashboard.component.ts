@@ -11,6 +11,7 @@ import {
 import { ContentService } from 'src/app/services/contenido.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/internal/Observable';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-teacher-dashboard',
@@ -23,9 +24,9 @@ export class TeacherDashboardComponent {
   selectedUnitId: string | null = null;
   oaType: 'video' | 'image' | 'document' | 'external' = 'external';
   curso!: Course | undefined;
-  learningObjects: Resource[] = [];
+  learningObjects$: Observable<Resource[]> | null = null;
   materiaId?: string;
-  units$: Observable<Unit[]> | undefined;
+  units$: Observable<Unit[]> | null = null;
   isLoading = false;
 
   // Control de modales
@@ -42,50 +43,31 @@ export class TeacherDashboardComponent {
   descripcionNuevaUnidad: string = '';
   numeroNuevaUnidad: number | null = null;
   fileInput: HTMLInputElement | null = null;
+  nombre: string = '';
+  descripcion: string = '';
+  id_type: string = '';
+  file: File | null = null;
 
   constructor(
     private route: ActivatedRoute,
-    private cursoService: CursoService,
     private contentService: ContentService
-  ) {}
-
-  ngOnInit(): void {
-    this.loadUnits();
+  ) {
+    this.isLoading = true;
+    this.route.paramMap.subscribe((params) => {
+      this.materiaId = params.get('cursoId') ?? '';
+      console.log('Materia ID en dashboard:', this.materiaId);
+      this.loadUnits();
+    });
   }
 
   loadUnits(): void {
+    if (!this.materiaId) {
+      this.isLoading = false;
+      return;
+    }
     this.isLoading = true;
-    this.route.paramMap.subscribe((params) => {
-      const materiaId = params.get('cursoId');
-      this.materiaId = materiaId ?? '';
-      console.log('Materia ID:', this.materiaId);
-      if (this.materiaId) {
-        this.units$ = this.contentService.getUnits(this.materiaId);
-        // this.contentService.getUnits('3').subscribe({
-        //   next: (units) => {
-        //     this.units = units;
-        //     this.isLoading = false;
-        //   },
-        //   error: (err) => {
-        //     console.error('Error al cargar curso:', err);
-        //     this.isLoading = false;
-        //   },
-        // });
-      }
-      this.units$?.subscribe((data: Unit[]) => {
-        console.log('Unidades cargadas:', data);
-      });
-    });
-    this.contentService.getObjetosAprendizaje().subscribe({
-      next: (oas) => {
-        this.learningObjects = oas;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar objetos de aprendizaje:', err);
-        this.isLoading = false;
-      },
-    });
+    this.units$ = this.contentService.getUnits(this.materiaId).pipe(finalize(() => (this.isLoading = false)));
+    this.learningObjects$ = this.contentService.getObjetosAprendizaje().pipe(finalize(() => (this.isLoading = false)));
   }
 
   // UNIDADES
@@ -171,35 +153,30 @@ export class TeacherDashboardComponent {
     this.showObjectModal = true;
   }
 
-  saveObject(form: NgForm, fileInput: HTMLInputElement | null): void {
+  saveObject(form: NgForm): void {
     const values = form.value || {};
 
     const formData = new FormData();
     // id_tema (viene del hidden o de selectedTopicId)
     const idTema = 1;
-    formData.append('id_tema', idTema.toString());
-
-    formData.append('nombre', values.nombre ?? '');
-    formData.append('descripcion', values.descripcion ?? '');
-    formData.append('id_type', values.id_type ?? '');
-    formData.append('contenido', fileInput?.value ?? '');
-
     // adjuntar archivo si existe
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      formData.append('contenido', file, file.name);
-    }
+    formData.append('file', this.file ?? new File([], ''));
+    formData.append('id_tema', idTema.toString());
+    formData.append('id_type', this.id_type ?? '');
+    formData.append('nombre', this.nombre ?? '');
+    formData.append('descripcion', this.descripcion ?? '');
 
     formData.forEach((valor, clave) => {
       console.log(`${clave}: ${valor}`);
     });
+
     // decidir create / update según editingObject
     const request$ = this.editingObject?.id
       ? this.contentService.updateLearningObject(
           String(this.editingObject.id),
           formData
         )
-      : this.contentService.createLearningObjectWithFile(formData, fileInput!.files![0]);
+      : this.contentService.createLearningObjectWithFile(formData);
 
     this.isLoading = true;
     request$.subscribe({
