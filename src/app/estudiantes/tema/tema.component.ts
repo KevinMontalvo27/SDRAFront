@@ -57,8 +57,7 @@ import { Observable } from 'rxjs';
             </svg>
           </div>
           <div>
-            <h2 class="text-xl font-bold text-base-content">Recursos recomendados</h2>
-            <p class="text-sm text-base-content/60">Contenido personalizado según tu perfil de aprendizaje</p>
+            <h2 class="text-xl font-bold text-base-content">Objetos de aprendizaje</h2>
           </div>
         </div>
 
