@@ -179,27 +179,31 @@ export class ResultadosComponent implements OnInit, AfterViewInit {
 
   }
 
-  cambiasGrafica( event: any ) {
-    event.target.classList.add('active');
-    var element = document.getElementById('Tabla');
-    element?.classList.remove('active');
+  cambiasGrafica(event: any) {
+  // Activar tab de gráfica
+  document.getElementById('Grafica')?.classList.add('tab-active');
+  document.getElementById('Tabla')?.classList.remove('tab-active');
 
-    var grafic = document.getElementsByClassName('info_grafic')[0];
-    grafic?.classList.remove('activePreview');
-    var table = document.getElementsByClassName('info_table')[0];
-    table?.classList.add('activePreview');
-  }
+  // Mostrar gráfica, ocultar tabla
+  const grafic = document.querySelector('.info_grafic') as HTMLElement;
+  const table = document.querySelector('.info_table') as HTMLElement;
 
-  cambiasTabla( event:any) {
-    event.target.classList.add("active");
-    var element = document.getElementById('Grafica');
-    element?.classList.remove('active');
+  if (grafic) grafic.style.display = 'block';
+  if (table) table.style.display = 'none';
+}
 
-    var grafic = document.getElementsByClassName('info_grafic')[0];
-    grafic?.classList.add('activePreview');
-    var table = document.getElementsByClassName('info_table')[0];
-    table?.classList.remove('activePreview');
-  }
+cambiasTabla(event: any) {
+  // Activar tab de tabla
+  document.getElementById('Tabla')?.classList.add('tab-active');
+  document.getElementById('Grafica')?.classList.remove('tab-active');
+
+  // Mostrar tabla, ocultar gráfica
+  const grafic = document.querySelector('.info_grafic') as HTMLElement;
+  const table = document.querySelector('.info_table') as HTMLElement;
+
+  if (grafic) grafic.style.display = 'none';
+  if (table) table.style.display = 'block';
+}
 
   navigateCursos() {
     this.router.navigate(['/cursos']);
