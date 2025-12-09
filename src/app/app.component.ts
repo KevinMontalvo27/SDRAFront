@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { SidebarComponent } from './estudiantes/sidebar/sidebar.component';
 import { RecommendationService } from './services/recomendacion.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AppUser, UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +13,15 @@ import { TranslateService } from '@ngx-translate/core';
 export class AppComponent {
   title = 'P_TomaDeciciones';
   loggedUser!: string;
-  nombre_usuario$!: string;
-  grupo$!: string;
+  nombre_usuario$!: any;
+  grupo$!: any;
   isProfesor: boolean = false;
 
   constructor(
     private route: Router,
     private recSrv: RecommendationService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private userSrv: UserService
   ) {
     // Configurar idiomas disponibles
     translate.addLangs(['es', 'en']);
@@ -31,33 +33,23 @@ export class AppComponent {
     const savedLang = localStorage.getItem('lang') || 'es';
     translate.use(savedLang);
 
-    window.addEventListener('storage', (event) => {
-      if (
-        event.key === 'info_alumno' ||
-        event.key === 'info_profesor' ||
-        event.key === null
-      ) {
-        this.loadUserData();
-      }
-    });
   }
 
   ngOnInit() {
-    this.loadUserData();
+    this.userSrv.user$.subscribe((user) => {
+      this.loadUserData(user);
+    });
   }
 
-  loadUserData() {
-    const info_alumno = localStorage.getItem('info_alumno');
-    const info_profesor = localStorage.getItem('info_profesor');
-    if (info_alumno) {
-      const { nombre } = JSON.parse(info_alumno);
-      this.nombre_usuario$ = nombre;
-      this.grupo$ = JSON.parse(info_alumno).grupo;
-    } else if (info_profesor) {
-      const { nombre_profesor } = JSON.parse(info_profesor);
-      this.nombre_usuario$ = nombre_profesor;
+  loadUserData(user: AppUser | null = null) {
+    if (user?.grupo === 'Profesor') {
+      this.nombre_usuario$ = user?.nombre;
       this.grupo$ = 'Profesor';
       this.isProfesor = true;
+    } else if (user?.grupo) {
+      this.nombre_usuario$ = user?.nombre;
+      this.grupo$ = user?.grupo;
+      this.isProfesor = false;
     } else {
       this.nombre_usuario$ = '';
       this.grupo$ = '';
@@ -81,7 +73,7 @@ export class AppComponent {
   logout() {
     localStorage.removeItem('info_alumno');
     localStorage.removeItem('info_profesor');
-    this.loadUserData();
+    this.userSrv.clear();
     this.route.navigate(['/']);
   }
 }

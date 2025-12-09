@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Data } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class AlumnoService {
   ///////////////////////////////////////////////////
   /////// RUTA PARA CONECTAR LA API CON EL FRONT ////
   //private urlAPI: string = 'https://apiv2.powerhashing.io/';
-  private urlAPI: string = process.env['API_URL'] || 'http://localhost:3000/';
+  private urlAPI: string = environment.apiUrl || 'http://localhost:3000/';
 
   /////////////////////////////////////////////////////////////////////
   /////// METODO PARA HACER UN REFRESH A LOS DATOS SI ES NECESARIO ////

@@ -8,10 +8,11 @@ import {
 } from '../estudiantes/recomendacion/tipos.model';
 import { HttpClient } from '@angular/common/http';
 import { info } from 'console';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({ providedIn: 'root' })
 export class CursoService {
-  private urlAPI: string = process.env['API_URL'] || 'http://localhost:3000/';
+  private urlAPI: string = environment.apiUrl || 'http://localhost:3000/';
 
   constructor(private http: HttpClient) {}
 

@@ -15,7 +15,10 @@
         <div class="login">
           <div class="gap-2">
             <button
-              class="btn btn-outline btn-primary grow"
+              class="btn btn-outline btn-primary grow transition-colors duration-200"
+              [class.bg-blue-700]="userType === 'estudiante'"
+              [class.text-white]="userType === 'estudiante'"
+              [attr.aria-pressed]="userType === 'estudiante'"
               [ngClass]="{ selected: activeClass }"
               (click)="userType = 'estudiante'"
             >
@@ -23,7 +26,10 @@
               <p>Student</p>
             </button>
             <button
-              class="btn btn-outline btn-primary grow"
+              class="btn btn-outline btn-primary grow transition-colors duration-200"
+              [class.bg-blue-700]="userType === 'profesor'"
+              [class.text-white]="userType === 'profesor'"
+              [attr.aria-pressed]="userType === 'profesor'"
               [ngClass]="{ selected: !activeClass }"
               (click)="userType = 'profesor'"
             >

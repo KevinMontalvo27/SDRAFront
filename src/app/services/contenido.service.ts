@@ -14,7 +14,7 @@ import {
   providedIn: 'root',
 })
 export class ContentService {
-  private apiUrl: string = process.env['API_URL'] || 'http://localhost:3000/';
+  private apiUrl: string = environment.apiUrl || 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 
