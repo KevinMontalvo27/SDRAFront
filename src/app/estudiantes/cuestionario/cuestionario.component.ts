@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlumnoService } from 'src/app/services/alumno.service';
 import Swal from 'sweetalert2';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-cuestionario',
@@ -17,10 +19,11 @@ export class CuestionarioComponent implements OnInit {
   constructor(
     private servicio: AlumnoService,
     private route: ActivatedRoute,
-    private routing: Router
+    private routing: Router,
+    private translate: TranslateService
   ) {}
 
-  ngOnInit(): void {
+    ngOnInit(): void {
     this.obtenerPreguntas();
   }
 
@@ -100,5 +103,37 @@ export class CuestionarioComponent implements OnInit {
         });
       }
     );
+  }
+
+  cancelar() {
+  // Confirmar antes de cancelar si hay respuestas
+  const respondidas = this.Cuestionario?.filter(p => p.respuesta).length || 0;
+
+  if (respondidas > 0) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Perderás todas las respuestas que has dado hasta ahora',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6366f1',
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'Continuar encuesta',
+      customClass: {
+        container: 'my-swal',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.routing.navigate(['/Inicio']);
+      }
+    });
+  } else {
+    // Si no hay respuestas, regresar directamente
+    this.routing.navigate(['/Inicio']);
+  }
+}
+  contarRespondidas(): number {
+    if (!this.Cuestionario) return 0;
+    return this.Cuestionario.filter(p => p.respuesta).length;
   }
 }

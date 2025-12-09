@@ -30,6 +30,7 @@ export interface Topic {
   nombre: string;
   numero_tema: number;
   descripcion?: string;
+  subtemas?: string[];
 }
 
 export interface Resource {
@@ -40,4 +41,5 @@ export interface Resource {
   tags?: string[];
   suitability?: LearningStyle;
   description?: string;
+  estiloTipo?: string;
 }
