@@ -12,7 +12,7 @@ import { map } from 'rxjs/internal/operators/map';
 
 @Injectable({ providedIn: 'root' })
 export class RecommendationService {
-  private urlAPI: string = 'http://localhost:3000/';
+  private urlAPI: string = process.env['API_URL'] || 'http://localhost:3000/';
   private grupo: number = 0;
 
   constructor(private http: HttpClient) {}

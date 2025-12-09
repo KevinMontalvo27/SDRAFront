@@ -11,7 +11,7 @@ export class AlumnoService {
   ///////////////////////////////////////////////////
   /////// RUTA PARA CONECTAR LA API CON EL FRONT ////
   //private urlAPI: string = 'https://apiv2.powerhashing.io/';
-  private urlAPI: string = 'http://localhost:3000/';
+  private urlAPI: string = process.env['API_URL'] || 'http://localhost:3000/';
 
   /////////////////////////////////////////////////////////////////////
   /////// METODO PARA HACER UN REFRESH A LOS DATOS SI ES NECESARIO ////

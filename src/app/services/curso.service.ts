@@ -11,7 +11,7 @@ import { info } from 'console';
 
 @Injectable({ providedIn: 'root' })
 export class CursoService {
-  private urlAPI: string = 'http://localhost:3000/';
+  private urlAPI: string = process.env['API_URL'] || 'http://localhost:3000/';
 
   constructor(private http: HttpClient) {}
 
