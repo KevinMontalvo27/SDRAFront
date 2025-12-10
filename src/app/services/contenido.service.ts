@@ -14,12 +14,12 @@ import {
   providedIn: 'root',
 })
 export class ContentService {
-  private apiUrl: string = environment.apiUrl || 'http://localhost:3000';
+  private apiUrl: string = environment.apiUrl || 'http://localhost:3000/';
 
   constructor(private http: HttpClient) {}
 
   loginProfesor(data: any): Observable<any> {
-    return this.http.post(this.apiUrl + '/profesores/login', data);
+    return this.http.post(this.apiUrl + 'profesores/login', data);
   }
 
   // UNIDADES
