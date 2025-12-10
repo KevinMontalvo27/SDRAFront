@@ -9,10 +9,11 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 import { map } from 'rxjs/internal/operators/map';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({ providedIn: 'root' })
 export class RecommendationService {
-  private urlAPI: string = 'http://localhost:3000/';
+  private urlAPI: string = environment.apiUrl || 'http://localhost:3000/';
   private grupo: number = 0;
 
   constructor(private http: HttpClient) {}

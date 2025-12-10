@@ -1,23 +1,134 @@
-<!-- Asegúrate de que tu formulario tenga un identificador utilizando la directiva ngForm -->
-<form #miFormulario="ngForm" (ngSubmit)="registrarRespuestas()">
-    <div *ngFor="let pregunta of Cuestionario; let i = index" class="container themed-container">
-      <h4> {{ pregunta.num_pregunta }} .-  {{ pregunta.pregunta }} </h4>
-      <div>
-        <label class="respuestas">
-          <input type="radio" name="{{ pregunta.num_pregunta }}" id="{{ pregunta.num_pregunta }}-A" class="radio_input" [(ngModel)]="pregunta.respuesta" value="A" [required]="true">
-          <div class="radio_radio"></div>
-          {{pregunta.respuesta_1}}
-        </label>
-        <label class="respuestas">
-          <input type="radio" name="{{ pregunta.num_pregunta }}" id="{{ pregunta.num_pregunta }}-B" class="radio_input" [(ngModel)]="pregunta.respuesta" value="B" [required]="true">
-          <div class="radio_radio"></div>
-          {{pregunta.respuesta_2}}
-        </label>
+<div class="min-h-screen bg-gradient-to-br from-base-200 to-base-300">
+  <form #miFormulario="ngForm" (ngSubmit)="registrarRespuestas()">
+
+    <!-- Header Sticky -->
+    <div class="fixed bottom-0 left-0 right-0 z-10 backdrop-blur-sm bg-base-100/80 border-b border-base-300 shadow-sm">
+      <div class="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <!-- Título -->
+          <div>
+            <h1 class="text-2xl font-bold text-base-content">Inventario de Felder-Silverman</h1>
+            <p class="text-sm text-base-content/60 mt-1">Descubre tu estilo de aprendizaje</p>
+          </div>
+
+          <!-- Botones -->
+          <div class="flex gap-2">
+            <button
+              type="button"
+              class="btn btn-outline btn-sm"
+              (click)="cancelar()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm"
+              [disabled]="!miFormulario.valid">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Guardar
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="mt-4">
+          <div class="flex justify-between text-xs text-base-content/60 mb-1">
+            <span>Progreso</span>
+            <span class="font-semibold">{{ contarRespondidas() }} / {{ Cuestionario.length || 0 }}</span>
+          </div>
+          <progress
+            class="progress progress-primary w-full h-2"
+            [value]="contarRespondidas()"
+            [max]="Cuestionario.length || 1">
+          </progress>
+        </div>
       </div>
     </div>
 
-    <div class="container boton">
-      <!-- Cambia el tipo de botón a "submit" y agrega el atributo form con el valor del identificador del formulario -->
-      <button type="submit" class="btn btn-primary" [disabled]="!miFormulario.valid">Record responses</button>
+    <!-- Preguntas -->
+    <div class="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div *ngFor="let pregunta of Cuestionario; let i = index">
+
+        <!-- Card de pregunta -->
+        <div class="card bg-base-100 shadow-md">
+          <div class="card-body p-5 sm:p-6">
+
+            <!-- Encabezado de pregunta -->
+            <div class="flex gap-3 mb-5">
+              <div class="badge badge-primary badge-lg font-bold">{{ pregunta.num_pregunta }}</div>
+              <p class="text-base sm:text-lg text-base-content font-medium leading-relaxed">
+                {{ pregunta.pregunta }}
+              </p>
+            </div>
+
+            <!-- Opciones -->
+            <div class="space-y-3">
+
+              <!-- Opción A -->
+              <label
+                class="flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all"
+                [ngClass]="{
+                  'border-primary bg-primary bg-opacity-5': pregunta.respuesta === 'A',
+                  'border-base-300 hover:border-primary hover:border-opacity-40': pregunta.respuesta !== 'A'
+                }">
+
+                <input
+                  type="radio"
+                  name="pregunta-{{ pregunta.num_pregunta }}"
+                  class="radio radio-primary flex-shrink-0 mt-0.5"
+                  [(ngModel)]="pregunta.respuesta"
+                  value="A"
+                  required>
+
+                <span class="text-sm sm:text-base text-base-content text-opacity-90">
+                  {{ pregunta.respuesta_1 }}
+                </span>
+              </label>
+
+              <!-- Opción B -->
+              <label
+                class="flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all"
+                [ngClass]="{
+                  'border-primary bg-primary bg-opacity-5': pregunta.respuesta === 'B',
+                  'border-base-300 hover:border-primary hover:border-opacity-40': pregunta.respuesta !== 'B'
+                }">
+
+                <input
+                  type="radio"
+                  name="pregunta-{{ pregunta.num_pregunta }}"
+                  class="radio radio-primary flex-shrink-0 mt-0.5"
+                  [(ngModel)]="pregunta.respuesta"
+                  value="B"
+                  required>
+
+                <span class="text-sm sm:text-base text-base-content text-opacity-90">
+                  {{ pregunta.respuesta_2 }}
+                </span>
+              </label>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Botón de envío al final -->
+      <div class="flex justify-center pt-4">
+        <button
+          type="submit"
+          class="btn btn-primary btn-wide"
+          [disabled]="!miFormulario.valid">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          Guardar respuestas
+        </button>
+      </div>
     </div>
+
   </form>
+</div>
