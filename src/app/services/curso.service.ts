@@ -25,4 +25,8 @@ export class CursoService {
   getCourses(grupo: number): Observable<Course[]> {
     return this.http.get<Course[]>(this.urlAPI + 'materias/grupo/' + grupo);
   }
+
+  getProfesorCourses(idProfesor: number): Observable<Course[]> {
+    return this.http.get<Course[]>(this.urlAPI + 'materias/profesor/' + idProfesor);
+  }
 }
