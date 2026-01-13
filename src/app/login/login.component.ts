@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlumnoService } from '../services/alumno.service';
-import { ContentService } from '../services/contenido.service'
+import { ContentService } from '../services/contenido.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 
@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
   activeClass: boolean;
   login_form: FormGroup = new FormGroup({});
   isCheck: any;
-  userType: string = 'estudiante';
+  userType: string = 'estudiante'; // ← Esta variable SÍ se actualiza ahora
 
   constructor(
     private fb: FormBuilder,
@@ -38,20 +38,32 @@ export class LoginComponent implements OnInit {
 
   onKeydown(event: Event): void {
     if (event instanceof KeyboardEvent && event.key === 'Enter') {
-      // Evitar el comportamiento predeterminado del formulario
       event.preventDefault();
-      // Llamar a la función sendLogin
       this.sendLogin();
     }
+  }
+
+  // ✅ AGREGAR ESTE MÉTODO
+  navigateTo(userType: string): void {
+    this.userType = userType; // ← Actualizar userType
+    this.activeClass = userType === 'estudiante'; // ← Actualizar activeClass
   }
 
   sendLogin(): void {
     if (this.login_form.valid) {
       if (this.userType === 'estudiante') {
+        // ====== LOGIN ESTUDIANTE ======
+        const nroCuenta = Number(this.login_form.controls['nro_cuenta'].value);
+        const contra = this.login_form.controls['password'].value;
+        console.log('📤 Enviando login estudiante:', {
+          nro_cuenta: nroCuenta,
+          contra: contra,
+        }); // ← Debug
+
         this.servicio
           .loginAlumno({
-            nro_cuenta: this.login_form.controls['nro_cuenta'].value,
-            password: this.login_form.controls['password'].value,
+            nro_cuenta: nroCuenta,
+            password: contra,
           })
           .subscribe(
             (data) => {
@@ -59,11 +71,10 @@ export class LoginComponent implements OnInit {
               this.route.navigate(['/cursos']);
             },
             (error) => {
+              console.error('❌ Error login estudiante:', error); // ← Debug
               Swal.fire({
                 title: 'Error de inicio de sesión',
-                html:
-                  'Error: ' +
-                  'Datos no válidos o cuenta inexistente, intentelo de nuevo... ',
+                html: 'Error: Datos no válidos o cuenta inexistente, intentelo de nuevo...',
                 icon: 'error',
                 customClass: {
                   container: 'my-swal',
@@ -72,22 +83,33 @@ export class LoginComponent implements OnInit {
             }
           );
       } else if (this.userType === 'profesor') {
+        // ====== LOGIN PROFESOR ======
+        const nroEmpleado = Number(
+          this.login_form.controls['nro_cuenta'].value
+        ); // ← Convertir a número
+        const contra = this.login_form.controls['password'].value;
+
+        console.log('📤 Enviando login profesor:', {
+          nro_empleado: nroEmpleado,
+          contra,
+        }); // ← Debug
+
         this.servicioProfesor
           .loginProfesor({
-            nro_empleado: this.login_form.controls['nro_cuenta'].value,
-            contra: this.login_form.controls['password'].value,
+            nro_empleado: nroEmpleado, // ← Enviar como número
+            contra: contra, // ← Campo correcto
           })
           .subscribe(
             (data) => {
+              console.log('✅ Login profesor exitoso:', data); // ← Debug
               localStorage.setItem('info_profesor', JSON.stringify(data));
               this.route.navigate(['/profesor']);
             },
             (error) => {
+              console.error('❌ Error login profesor:', error); // ← Debug
               Swal.fire({
                 title: 'Error de inicio de sesión',
-                html:
-                  'Error: ' +
-                  'Datos no válidos o cuenta inexistente, intentelo de nuevo... ',
+                html: 'Error: Datos no válidos o cuenta inexistente, intentelo de nuevo...',
                 icon: 'error',
                 customClass: {
                   container: 'my-swal',

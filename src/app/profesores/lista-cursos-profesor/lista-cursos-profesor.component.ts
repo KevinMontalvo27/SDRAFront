@@ -12,11 +12,14 @@ import { Course } from 'src/app/estudiantes/recomendacion/tipos.model';
   templateUrl: './lista-cursos-profesor.component.html',
 })
 export class TeacherCourseListComponent {
-  grupo = 203;
+  idProfesor = 0;
   courses$: Observable<Course[]>;
   
   constructor(private courseSrv: CursoService) {
-    
-    this.courses$ = this.courseSrv.getCourses(this.grupo);
+    const info = localStorage.getItem('info_profesor');
+    if (info) {
+      this.idProfesor = JSON.parse(info).id_profesor;
+    }
+    this.courses$ = this.courseSrv.getProfesorCourses(this.idProfesor);
   }
 }
