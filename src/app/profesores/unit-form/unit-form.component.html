@@ -16,10 +16,14 @@
       + Editar Unidad
     </button>
     <button class="btn btn-primary" (click)="openCreateTopic()">
-      + Nueva Tema
+      + Nuevo Tema
+    </button>
+    <button class="btn btn-error" (click)="deleteUnit()">
+      - Eliminar Unidad
     </button>
   </header>
 
+  <!-- Modal Editar Unidad -->
   <div
     *ngIf="showUnitModal && (unit$ | async) as editingUnit"
     class="modal modal-open"
@@ -75,6 +79,7 @@
     </div>
   </div>
 
+  <!-- Modal Nuevo Tema -->
   <div *ngIf="showTopicModal" class="modal modal-open">
     <div class="modal-box">
       <h3 class="font-bold text-lg mb-4">Nuevo Tema</h3>

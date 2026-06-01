@@ -2,7 +2,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   Unit,
@@ -15,8 +15,14 @@ import {
 })
 export class ContentService {
   private apiUrl: string = environment.apiUrl || 'http://localhost:3000/';
+  private unitsChangedSubject = new Subject<void>();
+  public unitsChanged$ = this.unitsChangedSubject.asObservable();
 
   constructor(private http: HttpClient) {}
+
+    notifyUnitsChanged(): void {
+    this.unitsChangedSubject.next();
+  }
 
   loginProfesor(data: any): Observable<any> {
     return this.http.post(this.apiUrl + 'profesores/login', data);
@@ -38,7 +44,7 @@ export class ContentService {
   }
 
   updateUnit(id: string, unit: Partial<Unit>): Observable<Unit> {
-    return this.http.patch<Unit>(`${this.apiUrl}unidades/${id}`, unit);
+    return this.http.put<Unit>(`${this.apiUrl}unidades/${id}`, unit);
   }
 
   deleteUnit(id: string): Observable<void> {
@@ -60,7 +66,7 @@ export class ContentService {
   }
 
   updateTopic(id: string, topic: Partial<Topic>): Observable<Topic> {
-    return this.http.patch<Topic>(`${this.apiUrl}temas/${id}`, topic);
+    return this.http.put<Topic>(`${this.apiUrl}temas/${id}`, topic);
   }
 
   deleteTopic(id: string): Observable<void> {
@@ -72,10 +78,10 @@ export class ContentService {
     return this.http.get<Resource[]>(`${this.apiUrl}objetos-aprendizaje/tema/${idTema}`);
   }
 
-  createLearningObject(formData: FormData): Observable<Resource> {
+  createLearningObject(data: any): Observable<Resource> {
     return this.http.post<Resource>(
       `${this.apiUrl}objetos-aprendizaje`,
-      formData
+      data
     );
   }
 
@@ -90,13 +96,17 @@ export class ContentService {
   }
 
   updateLearningObject(id: string, formData: FormData): Observable<Resource> {
-    return this.http.patch<Resource>(
+    return this.http.put<Resource>(
       `${this.apiUrl}objetos-aprendizaje/${id}`,
       formData
     );
   }
 
   deleteLearningObject(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}objetos-aprendizaje/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}objetos-aprendizaje/${id}/full`);
+  }
+
+  getEstilosObjeto(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}estilo-objeto`);
   }
 }

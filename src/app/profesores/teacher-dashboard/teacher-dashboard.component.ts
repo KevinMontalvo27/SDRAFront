@@ -11,6 +11,7 @@ import {
 import { ContentService } from 'src/app/services/contenido.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/internal/Observable';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-teacher-dashboard',
@@ -59,34 +60,13 @@ export class TeacherDashboardComponent {
     this.route.paramMap.subscribe((params) => {
       const materiaId = params.get('cursoId');
       this.materiaId = materiaId ?? '';
-      console.log('Materia ID:', this.materiaId);
       if (this.materiaId) {
         this.units$ = this.contentService.getUnits(this.materiaId);
-        // this.contentService.getUnits('3').subscribe({
-        //   next: (units) => {
-        //     this.units = units;
-        //     this.isLoading = false;
-        //   },
-        //   error: (err) => {
-        //     console.error('Error al cargar curso:', err);
-        //     this.isLoading = false;
-        //   },
-        // });
       }
       this.units$?.subscribe((data: Unit[]) => {
         console.log('Unidades cargadas:', data);
       });
     });
-    // this.contentService.getObjetosAprendizaje().subscribe({
-    //   next: (oas) => {
-    //     this.learningObjects = oas;
-    //     this.isLoading = false;
-    //   },
-    //   error: (err) => {
-    //     console.error('Error al cargar objetos de aprendizaje:', err);
-    //     this.isLoading = false;
-    //   },
-    // });
   }
 
   // UNIDADES
@@ -100,29 +80,104 @@ export class TeacherDashboardComponent {
     this.showUnitModal = true;
   }
 
+  cancelarNuevaUnidad(form: any): void {
+    this.nombreNuevaUnidad = '';
+    this.descripcionNuevaUnidad = '';
+    this.numeroNuevaUnidad = null;
+    form.resetForm();
+  }
+
   saveUnit(unit: Partial<Unit>): void {
+    const isEditing = !!this.editingUnit?.id;
     unit.id_materia = this.materiaId;
-    const request = this.editingUnit?.id
-      ? this.contentService.updateUnit(this.editingUnit.id, unit)
+    const request = isEditing
+      ? this.contentService.updateUnit(this.editingUnit!.id, unit)
       : this.contentService.createUnit(unit);
-    console.log('Guardando unidad:', unit);
+
+    Swal.fire({
+      title: isEditing ? 'Actualizando unidad...' : 'Creando unidad...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
 
     request.subscribe({
       next: () => {
         this.showUnitModal = false;
         this.loadUnits();
+        this.contentService.notifyUnitsChanged();
+
+        Swal.fire({
+          title: isEditing ? '¡Unidad actualizada!' : '¡Unidad creada!',
+          text: isEditing
+            ? 'La unidad se ha actualizado correctamente.'
+            : 'La nueva unidad se ha creado correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#6366f1',
+          customClass: { container: 'my-swal' },
+        });
       },
-      error: (err) => console.error('Error al guardar unidad:', err),
+      error: (err) => {
+        console.error('Error al guardar unidad:', err);
+        this.showUnitModal = false;
+        Swal.fire({
+          title: 'Error',
+          text: isEditing
+            ? 'Error al actualizar la unidad. Por favor, intenta de nuevo.'
+            : 'Error al crear la unidad. Por favor, intenta de nuevo.',
+          icon: 'error',
+          confirmButtonColor: '#ef4444',
+          customClass: { container: 'my-swal' },
+        });
+      },
     });
   }
 
   deleteUnit(id: string): void {
-    if (confirm('¿Eliminar esta unidad y todo su contenido?')) {
-      this.contentService.deleteUnit(id).subscribe({
-        next: () => this.loadUnits(),
-        error: (err) => console.error('Error al eliminar:', err),
-      });
-    }
+    Swal.fire({
+      title: '¿Eliminar esta unidad?',
+      text: 'Se eliminará la unidad y todo su contenido. Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6366f1',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      customClass: { container: 'my-swal' },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Eliminando...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+        });
+
+        this.contentService.deleteUnit(id).subscribe({
+          next: () => {
+            this.loadUnits();
+            this.contentService.notifyUnitsChanged();
+            Swal.fire({
+              title: '¡Unidad eliminada!',
+              text: 'La unidad se ha eliminado correctamente.',
+              icon: 'success',
+              confirmButtonText: 'Aceptar',
+              confirmButtonColor: '#6366f1',
+              customClass: { container: 'my-swal' },
+            });
+          },
+          error: (err) => {
+            console.error('Error al eliminar:', err);
+            Swal.fire({
+              title: 'Error',
+              text: 'Error al eliminar la unidad. Por favor, intenta de nuevo.',
+              icon: 'error',
+              confirmButtonColor: '#ef4444',
+              customClass: { container: 'my-swal' },
+            });
+          },
+        });
+      }
+    });
   }
 
   // TEMAS
@@ -138,26 +193,95 @@ export class TeacherDashboardComponent {
   }
 
   saveTopic(topic: Partial<Topic>): void {
-    const request = this.editingTopic?.id
-      ? this.contentService.updateTopic(String(this.editingTopic.id), topic)
+    const isEditing = !!this.editingTopic?.id;
+    const request = isEditing
+      ? this.contentService.updateTopic(String(this.editingTopic!.id), topic)
       : this.contentService.createTopic({ ...topic });
+
+    Swal.fire({
+      title: isEditing ? 'Actualizando tema...' : 'Creando tema...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
 
     request.subscribe({
       next: () => {
         this.showTopicModal = false;
         this.loadUnits();
+        this.contentService.notifyUnitsChanged();
+
+        Swal.fire({
+          title: isEditing ? '¡Tema actualizado!' : '¡Tema creado!',
+          text: isEditing
+            ? 'El tema se ha actualizado correctamente.'
+            : 'El nuevo tema se ha creado correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#6366f1',
+          customClass: { container: 'my-swal' },
+        });
       },
-      error: (err) => console.error('Error al guardar tema:', err),
+      error: (err) => {
+        console.error('Error al guardar tema:', err);
+        this.showTopicModal = false;
+        Swal.fire({
+          title: 'Error',
+          text: isEditing
+            ? 'Error al actualizar el tema. Por favor, intenta de nuevo.'
+            : 'Error al crear el tema. Por favor, intenta de nuevo.',
+          icon: 'error',
+          confirmButtonColor: '#ef4444',
+          customClass: { container: 'my-swal' },
+        });
+      },
     });
   }
 
   deleteTopic(id: string): void {
-    if (confirm('¿Eliminar este tema?')) {
-      this.contentService.deleteTopic(id).subscribe({
-        next: () => this.loadUnits(),
-        error: (err) => console.error('Error:', err),
-      });
-    }
+    Swal.fire({
+      title: '¿Eliminar este tema?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6366f1',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      customClass: { container: 'my-swal' },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Eliminando...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+        });
+
+        this.contentService.deleteTopic(id).subscribe({
+          next: () => {
+            this.loadUnits();
+            this.contentService.notifyUnitsChanged();
+            Swal.fire({
+              title: '¡Tema eliminado!',
+              text: 'El tema se ha eliminado correctamente.',
+              icon: 'success',
+              confirmButtonText: 'Aceptar',
+              confirmButtonColor: '#6366f1',
+              customClass: { container: 'my-swal' },
+            });
+          },
+          error: (err) => {
+            console.error('Error:', err);
+            Swal.fire({
+              title: 'Error',
+              text: 'Error al eliminar el tema. Por favor, intenta de nuevo.',
+              icon: 'error',
+              confirmButtonColor: '#ef4444',
+              customClass: { container: 'my-swal' },
+            });
+          },
+        });
+      }
+    });
   }
 
   // OBJETOS DE APRENDIZAJE
@@ -182,60 +306,114 @@ export class TeacherDashboardComponent {
   saveObject(form: NgForm, fileInput: HTMLInputElement | null): void {
     const values = form.value || {};
 
-    const formData = new FormData();
-    // id_tema (viene del hidden o de selectedTopicId)
-    const idTema = 1;
-
-    formData.append('id_tema', idTema.toString());
-    formData.append('id_type', values.id_type ?? '');
-    formData.append('nombre', values.nombre ?? '');
-    formData.append('descripcion', values.descripcion ?? '');
-    // formData.append('contenido', fileInput?.value ?? '');
-    formData.append('file', this.file!);
-
-    // adjuntar archivo si existe
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      formData.append('file', file, file.name);
-      // formData.append('contenido', file, file.name);
+    if (!values.id_tema || !values.id_type || !values.nombre || !this.file) {
+      Swal.fire({
+        title: 'Campos incompletos',
+        text: 'Por favor completa todos los campos requeridos.',
+        icon: 'warning',
+        confirmButtonColor: '#6366f1',
+        customClass: { container: 'my-swal' },
+      });
+      return;
     }
 
-    formData.forEach((valor, clave) => {
-      if (clave === 'file') {
-        console.log('File name:', (valor as File).name);
-      } else {
-        console.log(`${clave}: ${valor}`);
-      }
-    });
-    // decidir create / update según editingObject
-    const request$ = this.editingObject?.id
-      ? this.contentService.updateLearningObject(
-          String(this.editingObject.id),
-          formData
-        )
-      : this.contentService.createLearningObjectWithFile(formData, this.file!);
+    const formData = new FormData();
+    formData.append('id_tema', String(values.id_tema));
+    formData.append('id_type', String(values.id_type));
+    formData.append('nombre', values.nombre);
+    formData.append('descripcion', values.descripcion || '');
+    formData.append('file', this.file, this.file.name);
+
+    const isEditing = !!this.editingObject?.id;
+    const request$ = isEditing
+      ? this.contentService.updateLearningObject(String(this.editingObject!.id), formData)
+      : this.contentService.createLearningObjectWithFile(formData, this.file);
 
     this.isLoading = true;
+
+    Swal.fire({
+      title: isEditing ? 'Actualizando objeto...' : 'Creando objeto...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
+
     request$.subscribe({
-      next: (res) => {
+      next: () => {
         this.isLoading = false;
         this.showObjectModal = false;
-        // refrescar lista de unidades/temas
         this.loadUnits();
+
+        Swal.fire({
+          title: isEditing ? '¡Objeto actualizado!' : '¡Objeto creado!',
+          text: isEditing
+            ? 'El objeto de aprendizaje se ha actualizado correctamente.'
+            : 'El nuevo objeto de aprendizaje se ha creado correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#6366f1',
+          customClass: { container: 'my-swal' },
+        });
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('Error al guardar objeto:', err);
+        this.showObjectModal = false;
+        console.error('Error completo:', err);
+        Swal.fire({
+          title: 'Error',
+          text: isEditing
+            ? `Error al actualizar el objeto: ${err.error?.message || err.message}`
+            : `Error al crear el objeto: ${err.error?.message || err.message}`,
+          icon: 'error',
+          confirmButtonColor: '#ef4444',
+          customClass: { container: 'my-swal' },
+        });
       },
     });
   }
 
   deleteObject(id: string): void {
-    if (confirm('¿Eliminar este objeto?')) {
-      this.contentService.deleteLearningObject(id).subscribe({
-        next: () => this.loadUnits(),
-        error: (err) => console.error('Error:', err),
-      });
-    }
+    Swal.fire({
+      title: '¿Eliminar este objeto?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6366f1',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      customClass: { container: 'my-swal' },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Eliminando...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+        });
+
+        this.contentService.deleteLearningObject(id).subscribe({
+          next: () => {
+            this.loadUnits();
+            Swal.fire({
+              title: '¡Objeto eliminado!',
+              text: 'El objeto de aprendizaje se ha eliminado correctamente.',
+              icon: 'success',
+              confirmButtonText: 'Aceptar',
+              confirmButtonColor: '#6366f1',
+              customClass: { container: 'my-swal' },
+            });
+          },
+          error: (err) => {
+            console.error('Error:', err);
+            Swal.fire({
+              title: 'Error',
+              text: 'Error al eliminar el objeto. Por favor, intenta de nuevo.',
+              icon: 'error',
+              confirmButtonColor: '#ef4444',
+              customClass: { container: 'my-swal' },
+            });
+          },
+        });
+      }
+    });
   }
 }

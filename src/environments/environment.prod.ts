@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://sdraback-production.up.railway.app/'
+  apiUrl: 'https://backend.edulors.org/',
+  // apiUrl: 'http://localhost:3000/',
 };
